@@ -1,0 +1,102 @@
+---
+title: "Yeast Genome Analysis: Loading, Subsetting, and RNA-to-DNA Conversion"
+author: "Adegun Oluwafemi Joseph"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = TRUE)
+```
+
+## Introduction
+
+This analysis demonstrates loading and manipulating *Saccharomyces cerevisiae* (baker's yeast) genome data using the `Biostrings` and `BSgenome` packages in R. The workflow includes: data import, subsetting sequences, and RNA-to-DNA conversions.
+
+------------------------------------------------------------------------
+
+## Load Required Libraries
+
+The following code loads the essential bioinformatics packages for genome data manipulation:
+
+```{r load-libraries, message=TRUE}
+# Load the Biostrings package for biological sequence manipulation
+# Provides functions for working with DNA, RNA, and protein sequences
+library(Biostrings)
+
+# Load the pre-compiled S. cerevisiae reference genome (sacCer3 assembly)
+# from the BSgenome package ecosystem
+library(BSgenome.Scerevisiae.UCSC.sacCer3)
+```
+
+------------------------------------------------------------------------
+
+## Load Yeast Genome Data
+
+Assign the *S. cerevisiae* genome object to a variable for downstream analysis:
+
+```{r load-yeast-genome}
+# Assign the S. cerevisiae reference genome (sacCer3) to a variable
+# This is a BSgenome object containing all 16 nuclear chromosomes
+yeast <- BSgenome.Scerevisiae.UCSC.sacCer3
+
+# Verify the object class and structure
+class(yeast)
+
+# Display basic genome information
+yeast
+```
+
+------------------------------------------------------------------------
+
+## Subset Genome Data
+
+Extract specific chromosomes or regions of interest:
+
+```{r subset-chromosome}
+# Extract chromosome I (the smallest yeast chromosome)
+chr1 <- yeast$chrI
+
+# Display sequence information
+class(chr1)
+length(chr1)
+
+# Extract a specific region (first 1000 base pairs of chromosome I)
+region_subset <- subseq(chr1, start = 1, end = 1000)
+region_subset
+```
+
+------------------------------------------------------------------------
+
+## RNA-to-DNA Conversion
+
+Convert RNA sequences to DNA and vice versa:
+
+```{r rna-dna-conversion}
+# Convert a DNA sequence to RNA (replace T with U)
+dna_seq <- DNAString("ATGCGTACG")
+rna_from_dna <- RNAString(dna_seq)
+
+cat("Original DNA:", as.character(dna_seq), "\n")
+cat("Converted to RNA:", as.character(rna_from_dna), "\n\n")
+
+# Reverse conversion: RNA to DNA (replace U with T)
+rna_seq <- RNAString("AUGCGUACG")
+dna_from_rna <- DNAString(rna_seq)
+
+cat("Original RNA:", as.character(rna_seq), "\n")
+cat("Converted to DNA:", as.character(dna_from_rna), "\n")
+```
+
+------------------------------------------------------------------------
+
+## Session Information
+
+```{r session-info}
+# Display R version and loaded packages for reproducibility
+sessionInfo()
+```
